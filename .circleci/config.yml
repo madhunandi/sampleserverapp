@@ -40,7 +40,7 @@ workflows:
   my_workflow:
     jobs:
       - build
-      - approve-build:
+      - build2:
           type: approval
           requires:
             - build
