@@ -41,6 +41,7 @@ jobs:
                 export ENV_NAME=PRODUCTION
                 if [[ -z ${CIRCLE_TAG} ]]; then export ENV_NAME=STAGING; fi
                 echo "Building for environment", ${ENV_NAME}
+                ./commit_check.sh
 
 workflows:
   version: 2
