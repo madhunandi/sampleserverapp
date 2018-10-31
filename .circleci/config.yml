@@ -20,3 +20,9 @@ jobs:
       - checkout
 
       - run: yarn install
+workflows:
+  version: 2
+  my_workflow:
+    jobs:
+      - build
+      
