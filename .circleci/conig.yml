@@ -20,6 +20,3 @@ jobs:
       - checkout
 
       - run: yarn install
-
-      # run tests!
-      - run: yarn test
