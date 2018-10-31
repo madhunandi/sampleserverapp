@@ -34,6 +34,13 @@ jobs:
 
     steps:
       - checkout
+      - deploy:
+          name: Deploy application with now
+          command: |
+                sudo yarn global add firebase-tools --prefix /
+                export ENV_NAME=PRODUCTION
+                if [[ -z ${CIRCLE_TAG} ]]; then export ENV_NAME=STAGING; fi
+                echo "Building for environment", ${ENV_NAME}
 
 workflows:
   version: 2
