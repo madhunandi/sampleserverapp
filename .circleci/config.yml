@@ -41,7 +41,7 @@ workflows:
     jobs:
       - build
       - approve-build:
-      type: approval
+          type: approval
           requires:
             - build
           filters:
