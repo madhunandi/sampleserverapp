@@ -40,5 +40,11 @@ workflows:
   my_workflow:
     jobs:
       - build
-      - build2
+      - approve-build:
+      type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
       
