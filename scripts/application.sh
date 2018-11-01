@@ -6,7 +6,7 @@ set -e
 sudo yarn global add now --prefix /
 cd public
 export ENV_NAME=PRODUCTION
-export NOW_TEAM: metapair
+export NOW_TEAM=metapair
 if [[ -z ${CIRCLE_TAG} ]]; then export ENV_NAME=STAGING; fi
 echo "Building for environment", ${ENV_NAME}
 for key in $(compgen -e); do if [[ ${key} == "${ENV_NAME}"* ]]; then new_variable=$(echo "${key}" | grep ^"${ENV_NAME}" | sed s/^"${ENV_NAME}"_//); export "${new_variable}"="${!key}"; fi; done
