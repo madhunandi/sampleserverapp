@@ -2,6 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
+
 version: 2
 jobs:
   build:
@@ -34,13 +35,22 @@ jobs:
 
     steps:
       - checkout
+      - deploy:
+          name: Deploy application with now
+          command: |
+                sudo yarn global add firebase-tools --prefix /
+                export ENV_NAME=PRODUCTION
+                if [[ -z ${CIRCLE_TAG} ]]; then export ENV_NAME=STAGING; fi
+                echo "Building for environment", ${ENV_NAME}
+                ./scripts/commit_check.sh
 
 workflows:
   version: 2
   my_workflow:
     jobs:
       - build
-      - build2:
+      - build2
+      - build-approval:
           type: approval
           requires:
             - build
