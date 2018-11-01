@@ -53,9 +53,9 @@ workflows:
   my_workflow:
     jobs:
       - build:
-        filters:
-          tags:
-            only: /^v.*/
+          filters:
+            tags:
+              only: /^v.*/
       - update:
           filters:
             branches:
