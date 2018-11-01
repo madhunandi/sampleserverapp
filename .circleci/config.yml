@@ -9,23 +9,7 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/node:8.10.0
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
 
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      - run: yarn install
-  build2:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:8.10.0
-      
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -38,23 +22,45 @@ jobs:
       - deploy:
           name: Deploy application with now
           command: |
-                sudo yarn global add firebase-tools --prefix /
-                export ENV_NAME=PRODUCTION
-                if [[ -z ${CIRCLE_TAG} ]]; then export ENV_NAME=STAGING; fi
-                echo "Building for environment", ${ENV_NAME}
-                ./scripts/commit_check.sh
+            export ENV_NAME=PRODUCTION
+            if [[ -z ${CIRCLE_TAG} ]]; then export ENV_NAME=STAGING; fi
+            for key in $(compgen -e); do echo ${key}; done
+            echo "Building for environment", ${ENV_NAME}
+  update:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:8.10.0
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - deploy:
+          name: Update application
+          command: |
+            export ENV_NAME=PRODUCTION
+            if [[ -z ${CIRCLE_TAG} ]]; then export ENV_NAME=STAGING; fi
+            for key in $(compgen -e); do echo ${key}; done
+            echo "update - building for environment", ${ENV_NAME}
 
 workflows:
   version: 2
   my_workflow:
     jobs:
-      - build
-      - build2
-      - build-approval:
-          type: approval
-          requires:
-            - build
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+      - update:
           filters:
             branches:
               only: master
-      
+            tags:
+              only: /^v.*$/
+          requires:
+            - build
